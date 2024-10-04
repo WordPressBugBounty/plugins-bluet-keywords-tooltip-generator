@@ -1,0 +1,1 @@
+# plugins-bluet-keywords-tooltip-generator

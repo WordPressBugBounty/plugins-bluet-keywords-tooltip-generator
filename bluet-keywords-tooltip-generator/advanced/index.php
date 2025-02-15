@@ -14,8 +14,6 @@ require_once dirname( __FILE__ ) . '/load-ajax.php';
 
 register_activation_hook( __FILE__,'bluet_kw_pro_activation');
 
-include_once(ABSPATH.'wp-admin/includes/plugin.php');
-
 bluet_filter_imgs_content();
 //enqueue functions
 //enque custom css if enabled

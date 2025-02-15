@@ -3,7 +3,7 @@
 Plugin Name: Tooltipy
 Description: This plugin allows you automatically create tooltip boxes for your technical keywords in order to explain them for your site visitors making surfing more comfortable.
 Author: Jamel Zarga
-Version: 5.4
+Version: 5.5
 Author URI: https://www.wpjam.co
 */
 
@@ -18,6 +18,18 @@ if($tooltipy_post_type_name == $default_tooltipy_post_type_name){
 	$tooltipy_cat_name="keywords_family";
 }
 
+include_once(ABSPATH.'wp-admin/includes/plugin.php');
+
+if( !defined('TOOLTIPY_PLUGIN_FILE_PATH') ){
+    define('TOOLTIPY_PLUGIN_FILE_PATH', __FILE__);
+}
+
+$tooltipy_plugin_data = get_plugin_data(TOOLTIPY_PLUGIN_FILE_PATH, true, false);
+
+if( !defined('TOOLTIPY_VERSION') ){
+    define('TOOLTIPY_VERSION', $tooltipy_plugin_data["Version"]);
+}
+
 require_once dirname( __FILE__ ) . '/advanced/index.php'; //advanced addon
 require_once dirname( __FILE__ ) . '/keyword-posttype.php'; //contain the class that handles the new custom post
 require_once dirname( __FILE__ ) . '/settings-page.php';
@@ -26,15 +38,6 @@ require_once dirname( __FILE__ ) . '/meta-boxes.php';
 require_once dirname( __FILE__ ) . '/glossary-shortcode.php';
 require_once dirname( __FILE__ ) . '/functions.php';
 
-if( !defined('TOOLTIPY_PLUGIN_FILE_PATH') ){
-    define('TOOLTIPY_PLUGIN_FILE_PATH', __FILE__);
-}
-
-$tooltipy_plugin_data = get_plugin_data(TOOLTIPY_PLUGIN_FILE_PATH);
-
-if( !defined('TOOLTIPY_VERSION') ){
-    define('TOOLTIPY_VERSION', $tooltipy_plugin_data["Version"]);
-}
 
 $tltpy_capability=apply_filters('bluet_kw_capability','manage_options');
 

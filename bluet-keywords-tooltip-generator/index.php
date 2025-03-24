@@ -3,7 +3,7 @@
 Plugin Name: Tooltipy
 Description: This plugin allows you automatically create tooltip boxes for your technical keywords in order to explain them for your site visitors making surfing more comfortable.
 Author: Jamel Zarga
-Version: 5.5
+Version: 5.5.3
 Author URI: https://www.wpjam.co
 */
 

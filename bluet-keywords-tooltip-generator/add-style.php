@@ -44,31 +44,33 @@ function bluet_kw_custom_style(){
 	}
 	?>
 	<script>
-		//apply keyword style only if keywords are Fetched
-		jQuery(document).on("keywordsFetched",function(){
-			jQuery(".bluet_tooltip").each(function(){
+		jQuery(function($) {
+			//apply keyword style only if keywords are Fetched
+			$(document).on("keywordsFetched",function(){
+				$(".bluet_tooltip").each(function(){
 
-//console.log(jQuery(this).prop("tagName"));
+				//console.log($(this).prop("tagName"));
 
-				if(jQuery(this).prop("tagName")!="IMG"){
-					jQuery(this).css({
-						"text-decoration": "none",
-						"color": "<?php echo $tooltip_color; ?>",
-						
-						<?php
-							if(!$bt_kw_on_background){
-								echo('"background": "'.$tooltip_bg_color.'",');
-								
-								echo('"padding": "1px 5px 3px 5px",');
-								echo('"font-size": "1em"');
-							}else{
-								echo('"border-bottom": "1px dotted",');
-								echo('"border-bottom-color": "'.$tooltip_color.'"');
-							}
-						?>
-					});
-				}
+					if($(this).prop("tagName")!="IMG"){
+						$(this).css({
+							"text-decoration": "none",
+							"color": "<?php echo $tooltip_color; ?>",
+							
+							<?php
+								if(!$bt_kw_on_background){
+									echo('"background": "'.$tooltip_bg_color.'",');
+									
+									echo('"padding": "1px 5px 3px 5px",');
+									echo('"font-size": "1em"');
+								}else{
+									echo('"border-bottom": "1px dotted",');
+									echo('"border-bottom-color": "'.$tooltip_color.'"');
+								}
+							?>
+						});
+					}
 
+				});
 			});
 		});
 	</script>

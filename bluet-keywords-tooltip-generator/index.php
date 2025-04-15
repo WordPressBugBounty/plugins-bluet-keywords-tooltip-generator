@@ -3,7 +3,7 @@
 Plugin Name: Tooltipy
 Description: This plugin allows you automatically create tooltip boxes for your technical keywords in order to explain them for your site visitors making surfing more comfortable.
 Author: Jamel Zarga
-Version: 5.5.3
+Version: 5.5.4
 Author URI: https://www.wpjam.co
 */
 
@@ -251,474 +251,473 @@ function tltpy_place_tooltips(){
 		wp_reset_postdata();
 		?>	
 		<script type="text/javascript">
-			/*test*/
-		function tltpy_fetch_kws(){
-			/*
-			<?php	var_dump($my_excluded_keywords); ?>
-			*/
-			window.kttg_tab=[
-			<?php foreach($my_keywords_terms as $my_kw){ 
+			jQuery(function($) {
+				/*test*/
+				function tltpy_fetch_kws(){
+					window.kttg_tab=[
+					<?php foreach($my_keywords_terms as $my_kw){ 
 
-				//for apostrophe issues :)
-				$my_kw['term']=preg_replace('/\&\#8217;/','’',$my_kw['term']);
-				$my_kw['syns']=preg_replace('/\&\#8217;/','’',$my_kw['syns']);
+						//for apostrophe issues :)
+						$my_kw['term']=preg_replace('/\&\#8217;/','’',$my_kw['term']);
+						$my_kw['syns']=preg_replace('/\&\#8217;/','’',$my_kw['syns']);
 
-					echo("[");
+							echo("[");
+							
+								//term
+								echo('"'.preg_replace('/([-[\]{}()*+?.,\\/^$|#\s])/','\\\\\\\\$1',$my_kw['term']));
+								if(!empty($my_kw['syns'])){
+									echo('|'.preg_replace('/([-[\]{}()*+?.,\\/^$#\s])/','\\\\\\\\$1',$my_kw['syns']).'"');
+								}else{
+									echo('"');
+								}
+								
+								//case sensitive
+								if($my_kw['case']){
+									echo(",true");
+								}else{
+									echo(",false");
+								}				
+								
+								//prefix
+								if($my_kw['pref']){
+									echo(",true");
+								}else{
+									echo(",false");
+								}
+
+								//categories class
+								echo(",'".$my_kw['families_class']."'");
+		
+								//if there is a video put a video class
+								if(strlen($my_kw['youtube'])>5){
+									echo(",'tooltipy-kw-youtube'");
+								}else{
+									echo(",''");
+								}
+
+								//icon	
+								echo(",'".$my_kw['icon']."'");
+
+								//number of times the keyword is fetched
+								echo(",0");
+								
+							echo("]");
+						?>,
+					<?php } ?>
+					];
+					tooltipIds=[
+					<?php foreach($my_keywords_terms as $my_kw){ ?>
+						"<?php echo($my_kw['kw_id']) ?>",
+					<?php } ?>
+					];
 					
-						//term
-						echo('"'.preg_replace('/([-[\]{}()*+?.,\\/^$|#\s])/','\\\\\\\\$1',$my_kw['term']));
-                        if(!empty($my_kw['syns'])){
-                            echo('|'.preg_replace('/([-[\]{}()*+?.,\\/^$#\s])/','\\\\\\\\$1',$my_kw['syns']).'"');
-                        }else{
-							echo('"');
-						}
-						
-						//case sensitive
-						if($my_kw['case']){
-							echo(",true");
-						}else{
-							echo(",false");
-						}				
-						
-						//prefix
-						if($my_kw['pref']){
-							echo(",true");
-						}else{
-							echo(",false");
-						}
-
-						//categories class
-                        echo(",'".$my_kw['families_class']."'");
- 
-                        //if there is a video put a video class
-                        if(strlen($my_kw['youtube'])>5){
-                            echo(",'tooltipy-kw-youtube'");
-                        }else{
-                            echo(",''");
-                        }
-
-						//icon	
-						echo(",'".$my_kw['icon']."'");
-
-                        //number of times the keyword is fetched
-						echo(",0");
-						
-					echo("]");
-				?>,
-			<?php } ?>
-			];
-			tooltipIds=[
-			<?php foreach($my_keywords_terms as $my_kw){ ?>
-				"<?php echo($my_kw['kw_id']) ?>",
-			<?php } ?>
-			];
-			
-			//include or fetch zone
-			<?php
-			$settings= get_option('bluet_kw_settings');
-			
-			$options = get_option('bluet_kw_advanced');
-			
-			$kttg_cover_class='';
-			$kttg_exclude_areas='';
-		
-			if(!empty($options['kttg_cover_areas'])){
-				$kttg_cover_class=$options['kttg_cover_areas'];
-				$kttg_cover_class=explode(" ",$kttg_cover_class);
-			}
-
-			$kttg_cover_tags = '';
-		
-			if(!empty($options['kttg_cover_tags'])){
-				$kttg_cover_tags = $options['kttg_cover_tags'];
-				$kttg_cover_tags = explode(" ",$kttg_cover_tags);
-			}
-
-			if(!empty($options['kttg_exclude_areas'])){
-				$kttg_exclude_areas=$options['kttg_exclude_areas'];
-				$kttg_exclude_areas=explode(" ",$kttg_exclude_areas);
+					//include or fetch zone
+					<?php
+					$settings= get_option('bluet_kw_settings');
+					
+					$options = get_option('bluet_kw_advanced');
+					
+					$kttg_cover_class='';
+					$kttg_exclude_areas='';
 				
-			}
-			?>
-			var class_to_cover=[
-						<?php
-						if(!empty($kttg_cover_class)){
-							foreach($kttg_cover_class as $cover_area){
-								if($cover_area!=""){
-									echo('".'.$cover_area.'",');
-								}
-							}
-						}
-						?>];
-			var tags_to_cover=[
-						<?php
-						if(!empty($kttg_cover_tags)){
-							foreach($kttg_cover_tags as $cover_tag){
-								if($cover_tag!=""){
-									echo( '"'.$cover_tag.'",');
-								}
-							}
-						}
-						?>];
-			var areas_to_cover = class_to_cover.concat( tags_to_cover );
+					if(!empty($options['kttg_cover_areas'])){
+						$kttg_cover_class=$options['kttg_cover_areas'];
+						$kttg_cover_class=explode(" ",$kttg_cover_class);
+					}
 
-			if(areas_to_cover.length==0){//if no classes mentioned
-				areas_to_cover.push("body");
-			}
+					$kttg_cover_tags = '';
+				
+					if(!empty($options['kttg_cover_tags'])){
+						$kttg_cover_tags = $options['kttg_cover_tags'];
+						$kttg_cover_tags = explode(" ",$kttg_cover_tags);
+					}
 
-			fetch_all="<?php if(!empty($settings["bt_kw_match_all"]) and $settings["bt_kw_match_all"]=='on'){
-					echo('g');
-			}?>";
-
-
-			//exclude zone block			
-			{
-				var zones_to_exclude=[
-							".kttg_glossary_content", //remove tooltips from inside the glossary content
-							"#tooltip_blocks_to_show", //remove tooltips from inside the tooltips
-							<?php
-							if(!empty($kttg_exclude_areas)){
-								foreach($kttg_exclude_areas as $exclude_area){
-									if($exclude_area!=""){
-										echo('".'.$exclude_area.'",');
+					if(!empty($options['kttg_exclude_areas'])){
+						$kttg_exclude_areas=$options['kttg_exclude_areas'];
+						$kttg_exclude_areas=explode(" ",$kttg_exclude_areas);
+						
+					}
+					?>
+					var class_to_cover=[
+								<?php
+								if(!empty($kttg_cover_class)){
+									foreach($kttg_cover_class as $cover_area){
+										if($cover_area!=""){
+											echo('".'.$cover_area.'",');
+										}
 									}
 								}
-							}
-							?>];
-				<?php
-				$kttg_exclude_anchor_tags = false;
-				
-				$kttg_exclude_heading_tags = array(false,false,false,false,false,false);
+								?>];
+					var tags_to_cover=[
+								<?php
+								if(!empty($kttg_cover_tags)){
+									foreach($kttg_cover_tags as $cover_tag){
+										if($cover_tag!=""){
+											echo( '"'.$cover_tag.'",');
+										}
+									}
+								}
+								?>];
+					var areas_to_cover = class_to_cover.concat( tags_to_cover );
 
-				$kttg_exclude_common_tags = array();
-
-				$adv_options = get_option('bluet_kw_advanced');
-
-				if(!empty($adv_options['kttg_exclude_anchor_tags']) and $adv_options['kttg_exclude_anchor_tags']=="on"){
-					$kttg_exclude_anchor_tags=true;
-				}
-
-				if(!empty($adv_options['kttg_exclude_heading_tags'])){
-					//heding h1 to h6
-					$kttg_exclude_heading_tags=$adv_options['kttg_exclude_heading_tags'];
-				}
-
-				if(!empty($adv_options['kttg_exclude_common_tags'])){
-					//heding h1 to h6
-					$kttg_exclude_common_tags = $adv_options['kttg_exclude_common_tags'];
-				}
-
-				//if exclude anchor tags			
-				if($kttg_exclude_anchor_tags){
-					?>
-						zones_to_exclude.push("a");
-					<?php
-				}
-
-				for($i=1;$i<7;$i++){
-					if(!empty($kttg_exclude_heading_tags["h".$i]) and $kttg_exclude_heading_tags["h".$i]=="on"){
-					?>
-						zones_to_exclude.push("h"+<?php echo($i); ?>);
-					<?php 
+					if(areas_to_cover.length==0){//if no classes mentioned
+						areas_to_cover.push("body");
 					}
-				}
 
-				foreach ($kttg_exclude_common_tags as $tag => $val) {
+					fetch_all="<?php if(!empty($settings["bt_kw_match_all"]) and $settings["bt_kw_match_all"]=='on'){
+							echo('g');
+					}?>";
+
+
+					//exclude zone block			
+					{
+						var zones_to_exclude=[
+									".kttg_glossary_content", //remove tooltips from inside the glossary content
+									"#tooltip_blocks_to_show", //remove tooltips from inside the tooltips
+									<?php
+									if(!empty($kttg_exclude_areas)){
+										foreach($kttg_exclude_areas as $exclude_area){
+											if($exclude_area!=""){
+												echo('".'.$exclude_area.'",');
+											}
+										}
+									}
+									?>];
+						<?php
+						$kttg_exclude_anchor_tags = false;
+						
+						$kttg_exclude_heading_tags = array(false,false,false,false,false,false);
+
+						$kttg_exclude_common_tags = array();
+
+						$adv_options = get_option('bluet_kw_advanced');
+
+						if(!empty($adv_options['kttg_exclude_anchor_tags']) and $adv_options['kttg_exclude_anchor_tags']=="on"){
+							$kttg_exclude_anchor_tags=true;
+						}
+
+						if(!empty($adv_options['kttg_exclude_heading_tags'])){
+							//heding h1 to h6
+							$kttg_exclude_heading_tags=$adv_options['kttg_exclude_heading_tags'];
+						}
+
+						if(!empty($adv_options['kttg_exclude_common_tags'])){
+							//heding h1 to h6
+							$kttg_exclude_common_tags = $adv_options['kttg_exclude_common_tags'];
+						}
+
+						//if exclude anchor tags			
+						if($kttg_exclude_anchor_tags){
+							?>
+								zones_to_exclude.push("a");
+							<?php
+						}
+
+						for($i=1;$i<7;$i++){
+							if(!empty($kttg_exclude_heading_tags["h".$i]) and $kttg_exclude_heading_tags["h".$i]=="on"){
+							?>
+								zones_to_exclude.push("h"+<?php echo($i); ?>);
+							<?php 
+							}
+						}
+
+						foreach ($kttg_exclude_common_tags as $tag => $val) {
+						?>
+							zones_to_exclude.push("<?php echo($tag); ?>");
+						<?php 
+						}
+						?>
+					}
+
+						for(var j=0 ; j<areas_to_cover.length ; j++){					
+							/*test overlapping classes*/
+							var tmp_classes=areas_to_cover.slice(); //affectation par valeur
+							//remove current elem from tmp tab
+							tmp_classes.splice(j,1);
+
+							//if have parents (to avoid overlapping zones)
+								if(
+									tmp_classes.length>0
+									&&
+									$(areas_to_cover[j]).parents(tmp_classes.join(",")).length>0
+								){
+									continue;
+								}
+							/*end : test overlapping classes*/
+
+
+							for(var cls=0 ; cls<$(areas_to_cover[j]).length ; cls++){	
+								zone=$(areas_to_cover[j])[cls];
+								//to prevent errors in unfound classes
+								if (zone==undefined) {
+									continue;
+								}
+							
+								for(var i=0;i<kttg_tab.length;i++){
+
+									suffix='';
+									if(kttg_tab[i][2]==true){//if is prefix
+										suffix='\\w*';
+									}
+									txt_to_find=kttg_tab[i][0];
+									var text_sep=[
+										'\\s',
+										'\\<',
+										'\\>',
+										'\\,',
+										'\\;',
+										'\\:',
+										'\\!',
+										'\\$',
+										'\\^',
+										'\\*',
+										'\\=',
+										'\\-',
+										'\\(',
+										'\\)',
+										'\'',
+										'\\"',
+										'\\&',
+										'\\?',
+										'\\.',
+										'\\/',
+										'\\§',
+										'\\%',
+										'\\£',
+										'\\¨',
+										'\\+',
+										'\\°',
+										'\\~',
+										'\\#',
+										'\\{',
+										'\\}',
+										'\\[',
+										'\\]',
+										'\\|',
+										'\\`',
+										'\^',
+										'\\@',
+										'\\¤',
+									]; //text separator							
+									
+									text_sep = '[' + text_sep.join("") + ']'
+									
+									//families for class
+									tooltipy_families_class=kttg_tab[i][3];
+		
+									//video class
+									tooltipy_video_class=kttg_tab[i][4];
+
+									/*test japanese and chinese*/
+									var japanese_chinese=/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/;
+									var jc_reg = new RegExp(japanese_chinese);
+									
+									if(jc_reg.test(txt_to_find)){
+										//change pattern if japanese or chinese text
+										text_sep=""; //no separator for japanese and chinese
+									}
+
+									pattern =
+										text_sep+"("+txt_to_find+")"+suffix+""+text_sep
+										+"|^("+txt_to_find+")"+suffix+"$"
+										+"|"+text_sep+"("+txt_to_find+")"+suffix+"$"
+										+"|^("+txt_to_find+")"+suffix+text_sep;
+
+									iscase='';
+									if(kttg_tab[i][1]==false){
+										iscase='i';
+									}						
+									var reg=new RegExp(pattern,fetch_all+iscase);
+
+									if (typeof findAndReplaceDOMText == 'function') { //if function exists
+									// Allow buttons to be matched with Tooltipy
+									delete findAndReplaceDOMText.NON_PROSE_ELEMENTS.button;
+									findAndReplaceDOMText(zone, {
+											<?php
+												echo("preset: 'prose',");
+												?>							
+											find: reg,
+											replace: function(portion) {
+												if(portion.text.trim() == "" && portion.node.textContent.substr(portion.node.textContent.length - 1) == " "){
+													portion.text = portion.text + " "
+												}
+
+												splitted=portion.text.split(new RegExp(txt_to_find,'i'));
+												txt_to_display=portion.text.match(new RegExp(txt_to_find,'i'));
+												/*exclude zones_to_exclude*/
+												zones_to_exclude_string=zones_to_exclude.join(", ");
+												if(
+													$(portion.node.parentNode).parents(zones_to_exclude_string).length>0
+													||
+													$(portion.node.parentNode).is(zones_to_exclude_string)
+												){
+													return portion.text;
+												}
+												/*avoid overlaped keywords*/
+												if(
+													$(portion.node.parentNode).parents(".bluet_tooltip").length>0
+													||
+													$(portion.node.parentNode).is(".bluet_tooltip")
+												){
+													return portion.text;
+												}
+												//number of appearence
+												<?php
+												if(!(!empty($settings["bt_kw_match_all"]) and $settings['bt_kw_match_all']=='on')){
+															?>
+															if(kttg_tab[i][6]==1){
+																return portion.text;
+															}
+															<?php
+												}
+												?>
+												
+												kttg_tab[i][6]++;
+
+												if(splitted[0]!=undefined){ before_kw = splitted[0]; }else{before_kw="";}
+												if(splitted[1]!=undefined){ after_kw = splitted[1]; }else{after_kw="";}
+												
+												if(portion.text!="" && portion.text!=" " && portion.text!="\t" && portion.text!="\n" ){
+													//console.log(i+" : ("+splitted[0]+"-["+txt_to_find+"]-"+splitted[1]+"-"+splitted[2]+"-"+splitted[3]+")");
+													<?php 
+														$options = get_option( 'bluet_kw_style' ); //to get the ['bt_kw_fetch_mode']
+														
+														//init added classes
+														(!empty($options['bt_kw_add_css_classes']['keyword'])) 	? $css_classes_added_inline_keywords=$options['bt_kw_add_css_classes']['keyword'] 	: $css_classes_added_inline_keywords="";
+														(!empty($options['bt_kw_add_css_classes']['popup'])) 	? $css_classes_added_popups=$options['bt_kw_add_css_classes']['popup'] 				: $css_classes_added_popups="";
+
+														if(empty($options['bt_kw_fetch_mode']) or $options['bt_kw_fetch_mode']=='highlight'){
+															//highlight
+													?>
+															var elem = document.createElement("span");
+
+															if(before_kw==undefined || before_kw==null){
+																	before_kw="";
+															}
+
+															//extract icon if present
+															kttg_icon='';
+
+															if(kttg_tab[i][5]!=""){
+																kttg_icon='<img src="'+kttg_tab[i][5]+'" >';
+															}																					
+
+															if(suffix!=""){														
+																var reg=new RegExp(suffix,"");
+																suff_after_kw=after_kw.split(reg)[0];
+																
+																if(after_kw.split(reg)[0]=="" && after_kw.split(reg)[1]!=undefined){
+																	suff_after_kw=after_kw.split(reg)[1];
+																}
+
+																if(suff_after_kw==undefined){
+																	suff_after_kw="";
+																}														
+
+																just_after_kw=after_kw.match(reg);
+																if(just_after_kw==undefined || just_after_kw==null){
+																	just_after_kw="";
+																}
+																
+																if(suff_after_kw==" "){
+																	suff_after_kw="  ";
+																}
+
+																if(before_kw==" "){
+																	before_kw="  ";
+																}
+																/*console.log('('+suffix+')('+after_kw.split(reg)[1]+')');
+																console.log('['+after_kw+'] -'+suff_after_kw+'-');*/
+
+															//with prefix
+																elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+just_after_kw+suff_after_kw : before_kw+"<span class='bluet_tooltip tooltipy-kw-prefix' data-tooltip="+tooltipIds[i]+">"+kttg_icon+txt_to_display+""+just_after_kw+"</span>"+suff_after_kw;
+															}else{                                                          
+																if(after_kw==" "){
+																	after_kw="  ";
+																}
+
+																if(before_kw==" "){
+																	before_kw="  ";
+																}  
+																//without prefix                                              
+																elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw : before_kw+"<span class='bluet_tooltip' data-tooltip="+tooltipIds[i]+">"+kttg_icon+txt_to_display+"</span>"+after_kw;
+															}
+															//add classes to keywords
+															$($(elem).children(".bluet_tooltip")[0]).addClass("tooltipy-kw tooltipy-kw-"+tooltipIds[i]+" "+tooltipy_families_class+" "+tooltipy_video_class+" <?php echo($css_classes_added_inline_keywords); ?>");
+
+															return elem;
+														
+													<?php
+														}else{
+															//icon
+													?>
+															var elem = document.createElement('span');
+															if(suffix!=""){
+																var reg=new RegExp(suffix,"");
+																suff_after_kw=after_kw.split(reg)[1];
+																if(suff_after_kw==undefined){
+																	suff_after_kw="";
+																}
+																//icon with prefix
+																elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw.match(reg)+suff_after_kw : before_kw+txt_to_display+after_kw.match(reg)+"<img src='<?php echo(plugins_url('/assets/qst-mark-1.png',__FILE__)); ?>' class='bluet_tooltip tooltipy-kw-prefix tooltipy-kw-icon' data-tooltip="+tooltipIds[i]+" />"+suff_after_kw;
+															}else{
+																//icon without prefix
+																elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw : before_kw+txt_to_display+"<img src='<?php echo(plugins_url('/assets/qst-mark-1.png',__FILE__)); ?>' class='bluet_tooltip tooltipy-kw-icon' data-tooltip="+tooltipIds[i]+" /> "+after_kw;
+															}
+
+															//add classes to keywords
+															$($(elem).children(".bluet_tooltip")[0]).addClass("tooltipy-kw tooltipy-kw-"+tooltipIds[i]+" "+tooltipy_families_class+" "+tooltipy_video_class+" <?php echo($css_classes_added_inline_keywords); ?>");
+
+															return elem;
+														
+													<?php
+															}
+													?>	
+												}else{
+														return "";
+												}																			
+											}
+										});
+									}
+
+								}		
+							}
+						}
+					//trigger event saying that keywords are fetched
+					$.event.trigger("keywordsFetched");
+				}
+				/*end test*/
+				
+				$(document).ready(function(){
+					tltpy_fetch_kws();
+					
+					bluet_placeTooltips(".bluet_tooltip, .bluet_img_tooltip","<?php echo($kttg_tooltip_position); ?>",true);	 
+					animation_type="<?php echo($animation_type);?>";
+					animation_speed="<?php echo($animation_speed);?>";
+					moveTooltipElementsTop(".bluet_block_to_show");
+				});
+				
+				$(document).on("keywordsLoaded",function(){
+					bluet_placeTooltips(".bluet_tooltip, .bluet_img_tooltip","<?php echo($kttg_tooltip_position); ?>",false);
+				});
+
+				/*	Lanch keywords fetching for a chosen event triggered - pro feature	*/
+				<?php 
+				$custom_events = ( !empty($adv_options['kttg_custom_events']) ? $adv_options['kttg_custom_events'] : "");
+				$custom_events_array = explode(",", $custom_events);
+
+				foreach ($custom_events_array as $custom_event) {
+					if($custom_event==""){
+						continue;
+					}
 				?>
-					zones_to_exclude.push("<?php echo($tag); ?>");
+					$("body").on('<?php echo($custom_event); ?>',function(){
+						tltpy_fetch_kws();
+					});
 				<?php 
 				}
 				?>
-			}
-
-				for(var j=0 ; j<areas_to_cover.length ; j++){					
-					/*test overlapping classes*/
-					var tmp_classes=areas_to_cover.slice(); //affectation par valeur
-					//remove current elem from tmp tab
-					tmp_classes.splice(j,1);
-
-					//if have parents (to avoid overlapping zones)
-						if(
-							tmp_classes.length>0
-							&&
-							jQuery(areas_to_cover[j]).parents(tmp_classes.join(",")).length>0
-						){
-							continue;
-						}
-					/*end : test overlapping classes*/
-
-
-					for(var cls=0 ; cls<jQuery(areas_to_cover[j]).length ; cls++){	
-						zone=jQuery(areas_to_cover[j])[cls];
-						//to prevent errors in unfound classes
-						if (zone==undefined) {
-							continue;
-						}
-					
-						for(var i=0;i<kttg_tab.length;i++){
-
-							suffix='';
-							if(kttg_tab[i][2]==true){//if is prefix
-								suffix='\\w*';
-							}
-							txt_to_find=kttg_tab[i][0];
-							var text_sep=[
-								'\\s',
-								'\\<',
-								'\\>',
-								'\\,',
-								'\\;',
-								'\\:',
-								'\\!',
-								'\\$',
-								'\\^',
-								'\\*',
-								'\\=',
-								'\\-',
-								'\\(',
-								'\\)',
-								'\'',
-								'\\"',
-								'\\&',
-								'\\?',
-								'\\.',
-								'\\/',
-								'\\§',
-								'\\%',
-								'\\£',
-								'\\¨',
-								'\\+',
-								'\\°',
-								'\\~',
-								'\\#',
-								'\\{',
-								'\\}',
-								'\\[',
-								'\\]',
-								'\\|',
-								'\\`',
-								'\^',
-								'\\@',
-								'\\¤',
-							]; //text separator							
-							
-							text_sep = '[' + text_sep.join("") + ']'
-							
-							//families for class
-                            tooltipy_families_class=kttg_tab[i][3];
- 
-                            //video class
-                            tooltipy_video_class=kttg_tab[i][4];
-
-							/*test japanese and chinese*/
-							var japanese_chinese=/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/;
-						    var jc_reg = new RegExp(japanese_chinese);
-    						
-							if(jc_reg.test(txt_to_find)){
-								//change pattern if japanese or chinese text
-								text_sep=""; //no separator for japanese and chinese
-							}
-
-							pattern =
-								text_sep+"("+txt_to_find+")"+suffix+""+text_sep
-								+"|^("+txt_to_find+")"+suffix+"$"
-								+"|"+text_sep+"("+txt_to_find+")"+suffix+"$"
-								+"|^("+txt_to_find+")"+suffix+text_sep;
-
-							iscase='';
-							if(kttg_tab[i][1]==false){
-								iscase='i';
-							}						
-							var reg=new RegExp(pattern,fetch_all+iscase);
-
-							if (typeof findAndReplaceDOMText == 'function') { //if function exists
-							  // Allow buttons to be matched with Tooltipy
-							  delete findAndReplaceDOMText.NON_PROSE_ELEMENTS.button;
-							  findAndReplaceDOMText(zone, {
-									<?php
-										echo("preset: 'prose',");
-										?>							
-									find: reg,
-									replace: function(portion) {
-										if(portion.text.trim() == "" && portion.node.textContent.substr(portion.node.textContent.length - 1) == " "){
-											portion.text = portion.text + " "
-										}
-
-										splitted=portion.text.split(new RegExp(txt_to_find,'i'));
-										txt_to_display=portion.text.match(new RegExp(txt_to_find,'i'));
-										/*exclude zones_to_exclude*/
-										zones_to_exclude_string=zones_to_exclude.join(", ");
-										if(
-											jQuery(portion.node.parentNode).parents(zones_to_exclude_string).length>0
-											||
-											jQuery(portion.node.parentNode).is(zones_to_exclude_string)
-										){
-											return portion.text;
-										}
-										/*avoid overlaped keywords*/
-										if(
-											jQuery(portion.node.parentNode).parents(".bluet_tooltip").length>0
-											||
-											jQuery(portion.node.parentNode).is(".bluet_tooltip")
-										){
-											return portion.text;
-										}
-										//number of appearence
-										<?php
-										if(!(!empty($settings["bt_kw_match_all"]) and $settings['bt_kw_match_all']=='on')){
-													?>
-													if(kttg_tab[i][6]==1){
-														return portion.text;
-													}
-													<?php
-										}
-										?>
-										
-										kttg_tab[i][6]++;
-
-										if(splitted[0]!=undefined){ before_kw = splitted[0]; }else{before_kw="";}
-										if(splitted[1]!=undefined){ after_kw = splitted[1]; }else{after_kw="";}
-										
-										if(portion.text!="" && portion.text!=" " && portion.text!="\t" && portion.text!="\n" ){
-											//console.log(i+" : ("+splitted[0]+"-["+txt_to_find+"]-"+splitted[1]+"-"+splitted[2]+"-"+splitted[3]+")");
-											<?php 
-												$options = get_option( 'bluet_kw_style' ); //to get the ['bt_kw_fetch_mode']
-												
-												//init added classes
-												(!empty($options['bt_kw_add_css_classes']['keyword'])) 	? $css_classes_added_inline_keywords=$options['bt_kw_add_css_classes']['keyword'] 	: $css_classes_added_inline_keywords="";
-												(!empty($options['bt_kw_add_css_classes']['popup'])) 	? $css_classes_added_popups=$options['bt_kw_add_css_classes']['popup'] 				: $css_classes_added_popups="";
-
-												if(empty($options['bt_kw_fetch_mode']) or $options['bt_kw_fetch_mode']=='highlight'){
-													//highlight
-											?>
-													var elem = document.createElement("span");
-
-													if(before_kw==undefined || before_kw==null){
-															before_kw="";
-													}
-
-													//extract icon if present
-													kttg_icon='';
-
-													if(kttg_tab[i][5]!=""){
-														kttg_icon='<img src="'+kttg_tab[i][5]+'" >';
-													}																					
-
-													if(suffix!=""){														
-														var reg=new RegExp(suffix,"");
-														suff_after_kw=after_kw.split(reg)[0];
-														
-														if(after_kw.split(reg)[0]=="" && after_kw.split(reg)[1]!=undefined){
-															suff_after_kw=after_kw.split(reg)[1];
-														}
-
-														if(suff_after_kw==undefined){
-															suff_after_kw="";
-														}														
-
-														just_after_kw=after_kw.match(reg);
-														if(just_after_kw==undefined || just_after_kw==null){
-															just_after_kw="";
-														}
-														
-														if(suff_after_kw==" "){
-                                                            suff_after_kw="  ";
-                                                        }
-
-                                                        if(before_kw==" "){
-                                                            before_kw="  ";
-                                                        }
-														/*console.log('('+suffix+')('+after_kw.split(reg)[1]+')');
-														console.log('['+after_kw+'] -'+suff_after_kw+'-');*/
-
-  										            //with prefix
-														elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+just_after_kw+suff_after_kw : before_kw+"<span class='bluet_tooltip tooltipy-kw-prefix' data-tooltip="+tooltipIds[i]+">"+kttg_icon+txt_to_display+""+just_after_kw+"</span>"+suff_after_kw;
-                                                	}else{                                                          
-                                                        if(after_kw==" "){
-                                                            after_kw="  ";
-                                                        }
-
-                                                        if(before_kw==" "){
-                                                            before_kw="  ";
-                                                        }  
-                                                        //without prefix                                              
-                                                        elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw : before_kw+"<span class='bluet_tooltip' data-tooltip="+tooltipIds[i]+">"+kttg_icon+txt_to_display+"</span>"+after_kw;
-                                                    }
-													//add classes to keywords
-                                                    jQuery(jQuery(elem).children(".bluet_tooltip")[0]).addClass("tooltipy-kw tooltipy-kw-"+tooltipIds[i]+" "+tooltipy_families_class+" "+tooltipy_video_class+" <?php echo($css_classes_added_inline_keywords); ?>");
-
-													return elem;
-												
-											<?php
-												}else{
-													//icon
-											?>
-													var elem = document.createElement('span');
-													if(suffix!=""){
-														var reg=new RegExp(suffix,"");
-														suff_after_kw=after_kw.split(reg)[1];
-														if(suff_after_kw==undefined){
-															suff_after_kw="";
-														}
-														//icon with prefix
-														elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw.match(reg)+suff_after_kw : before_kw+txt_to_display+after_kw.match(reg)+"<img src='<?php echo(plugins_url('/assets/qst-mark-1.png',__FILE__)); ?>' class='bluet_tooltip tooltipy-kw-prefix tooltipy-kw-icon' data-tooltip="+tooltipIds[i]+" />"+suff_after_kw;
-                                                    }else{
-                                                    	//icon without prefix
-                                                        elem.innerHTML=(txt_to_display==undefined || txt_to_display==null) ? before_kw+after_kw : before_kw+txt_to_display+"<img src='<?php echo(plugins_url('/assets/qst-mark-1.png',__FILE__)); ?>' class='bluet_tooltip tooltipy-kw-icon' data-tooltip="+tooltipIds[i]+" /> "+after_kw;
-                                                    }
-
-                                                    //add classes to keywords
-                                                    jQuery(jQuery(elem).children(".bluet_tooltip")[0]).addClass("tooltipy-kw tooltipy-kw-"+tooltipIds[i]+" "+tooltipy_families_class+" "+tooltipy_video_class+" <?php echo($css_classes_added_inline_keywords); ?>");
-
-													return elem;
-												
-											<?php
-													}
-											?>	
-										}else{
-												return "";
-										}																			
-									}
-								});
-							}
-
-						}		
-					}
-				}
-			//trigger event sying that keywords are fetched
-			jQuery.event.trigger("keywordsFetched");
-		}
-			/*end test*/
-			
-			jQuery(document).ready(function(){
-				tltpy_fetch_kws();
-				
-				bluet_placeTooltips(".bluet_tooltip, .bluet_img_tooltip","<?php echo($kttg_tooltip_position); ?>",true);	 
-				animation_type="<?php echo($animation_type);?>";
-				animation_speed="<?php echo($animation_speed);?>";
-				moveTooltipElementsTop(".bluet_block_to_show");
 			});
-			
-			jQuery(document).on("keywordsLoaded",function(){
-				bluet_placeTooltips(".bluet_tooltip, .bluet_img_tooltip","<?php echo($kttg_tooltip_position); ?>",false);
-			});
-
-			/*	Lanch keywords fetching for a chosen event triggered - pro feature	*/
-			<?php 
-			$custom_events = ( !empty($adv_options['kttg_custom_events']) ? $adv_options['kttg_custom_events'] : "");
-			$custom_events_array = explode(",", $custom_events);
-
-			foreach ($custom_events_array as $custom_event) {
-				if($custom_event==""){
-					continue;
-				}
-			?>
-				jQuery("body").on('<?php echo($custom_event); ?>',function(){
-					tltpy_fetch_kws();
-				});
-			<?php 
-			}
-			?>
 
 		</script>
 				<?php
@@ -726,18 +725,20 @@ function tltpy_place_tooltips(){
 			//if not in admin page
 			?>
 			<script>
-				jQuery(document).ready(function(){				
-						/*test begin*/
-					load_tooltip="<span id='loading_tooltip' class='bluet_block_to_show' data-tooltip='0'>";
-						load_tooltip+="<div class='bluet_block_container'>";									
-							load_tooltip+="<div class='bluet_text_content'>";							
-									load_tooltip+="<img width='15px' src='<?php echo plugins_url('/assets/loading.gif',__FILE__); ?>' />";
-							load_tooltip+="</div>";						
-						load_tooltip+="</div>";
-					load_tooltip+="</span>";
+				jQuery(function($) {
+					$(document).ready(function(){				
+							/*test begin*/
+						load_tooltip="<span id='loading_tooltip' class='bluet_block_to_show' data-tooltip='0'>";
+							load_tooltip+="<div class='bluet_block_container'>";									
+								load_tooltip+="<div class='bluet_text_content'>";							
+										load_tooltip+="<img width='15px' src='<?php echo plugins_url('/assets/loading.gif',__FILE__); ?>' />";
+								load_tooltip+="</div>";						
+							load_tooltip+="</div>";
+						load_tooltip+="</span>";
 
-					jQuery("#tooltip_blocks_to_show").append(load_tooltip);
-					/*test end*/
+						$("#tooltip_blocks_to_show").append(load_tooltip);
+						/*test end*/
+					});
 				});
 			</script>
 			<?php

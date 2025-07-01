@@ -3,7 +3,7 @@ Contributors: lebleut
 Tags: tooltip, highlight, keyword, glossary, link
 Requires at least: 3.9
 Tested up to: 6.7.2
-Stable tag: 5.5.4
+Stable tag: 5.5.5
 License: GPLv2 or later
 
 Tooltipy allows you to highlight the keywords in your content in order to show a responsive description tooltips

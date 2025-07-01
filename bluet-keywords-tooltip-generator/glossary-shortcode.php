@@ -17,10 +17,14 @@ function tltpy_glossary(){
 	 
 	$glossary_options = get_option( 'bluet_glossary_options' );
 
-	$label_select_a_family		= is_array($glossary_options['kttg_glossary_text']) && array_key_exists('kttg_glossary_text_select_a_family', $glossary_options['kttg_glossary_text'] ) && $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_a_family'] != "" ? $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_a_family'] : "Select a family";
-	$label_select_all_families 	= is_array($glossary_options['kttg_glossary_text']) && array_key_exists('kttg_glossary_text_select_all_families', $glossary_options['kttg_glossary_text'] ) && $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_all_families'] != "" ? $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_all_families'] : "All families";
+	$label_select_a_family = $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_a_family'] ?? "Select a family";
+	$label_select_a_family = !is_string($label_select_a_family) || trim($label_select_a_family) === "" ? "Select a family" : $label_select_a_family;
 
-    $tooltipy_glossary_show_thumb = is_array($glossary_options) && array_key_exists('tltpy_glossary_show_thumb', $glossary_options ) ? $glossary_options['tltpy_glossary_show_thumb'] : "";
+	$label_select_all_families = $glossary_options['kttg_glossary_text']['kttg_glossary_text_select_all_families'] ?? "All families";
+	$label_select_all_families = !is_string($label_select_all_families) || trim($label_select_all_families) === "" ? "All families" : $label_select_all_families;
+
+    $tooltipy_glossary_show_thumb = $glossary_options['tltpy_glossary_show_thumb'] ?? "";
+	$tooltipy_glossary_show_thumb = !is_string($tooltipy_glossary_show_thumb) || trim($tooltipy_glossary_show_thumb) === "" ? "" : $tooltipy_glossary_show_thumb;
 	 
     $is_kttg_glossary_page=true;
 	
@@ -163,8 +167,8 @@ function tltpy_glossary(){
     $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 	
 	$showposts=-1;
-	if( is_array($glossary_options) && array_key_exists('kttg_kws_per_page', $glossary_options) && $glossary_options['kttg_kws_per_page'] != "" ){
-		$showposts=$glossary_options['kttg_kws_per_page'];
+	if( isset($glossary_options['kttg_kws_per_page']) && trim($glossary_options['kttg_kws_per_page']) != "" ){
+		$showposts = intval($glossary_options['kttg_kws_per_page']);
 	}
 	
     // the query

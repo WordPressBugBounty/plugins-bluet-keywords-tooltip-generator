@@ -5,7 +5,7 @@
 						<h3><?php _e('Excluded posts','tooltipy-lang');?></h3>
 						<p><?php _e('Posts which are excluded from being matched','tooltipy-lang');?></p>
 						<?php
-						$excluded_posts=bluet_kw_fetch_excluded_posts();
+						$excluded_posts = bluet_kw_fetch_excluded_posts();
 
 						if(empty($excluded_posts)){ 
 							echo('<p style="color:red;">');

@@ -194,3 +194,124 @@ function tooltipy_families_posts_filter($query){
     }
 }
 /* END -- Edit keywords page */
+
+/**
+ * Migration function to move excluded posts from global option to postmeta
+ * This function migrates data from "tooltipy_excluded_posts_from_matching" option to individual postmeta
+ */
+function tooltipy_migrate_excluded_posts_to_postmeta() {
+	// Get the old global option
+	$tooltipy_excluded_posts = get_option("tooltipy_excluded_posts_from_matching");
+	
+	if (!empty($tooltipy_excluded_posts) && is_array($tooltipy_excluded_posts)) {
+		$migrated_count = 0;
+		$failed_count = 0;
+		
+		foreach ($tooltipy_excluded_posts as $excluded_post) {
+			if (isset($excluded_post['id'])) {
+				$post_id = intval($excluded_post['id']);
+				
+				// Check if the post still exists
+				if (get_post($post_id)) {
+					// Check if postmeta doesn't already exist or is not set to 'on'
+					$current_meta = get_post_meta($post_id, 'bluet_exclude_post_from_matching', true);
+					
+					if ($current_meta !== 'on') {
+						// Set the postmeta to exclude this post
+						update_post_meta($post_id, 'bluet_exclude_post_from_matching', 'on');
+						$migrated_count++;
+					}
+				} else {
+					$failed_count++;
+				}
+			}
+		}
+		
+		// Delete the old global option after successful migration
+		if ($migrated_count > 0) {
+			delete_option("tooltipy_excluded_posts_from_matching");
+			
+			// Add an admin notice about successful migration
+			add_option('tooltipy_migration_notice', array(
+				'migrated' => $migrated_count,
+				'failed' => $failed_count,
+				'timestamp' => current_time('mysql')
+			));
+		}
+		
+		return array('migrated' => $migrated_count, 'failed' => $failed_count);
+	}
+	
+	return false;
+}
+
+/**
+ * Run migration automatically on admin init (only once)
+ */
+add_action('admin_init', function() {
+	// Check if migration has already been run
+	if (!get_option('tooltipy_excluded_posts_migrated')) {
+		// Check if there's data to migrate
+		$old_data = get_option("tooltipy_excluded_posts_from_matching");
+		
+		if (!empty($old_data) && is_array($old_data)) {
+			$result = tooltipy_migrate_excluded_posts_to_postmeta();
+			
+			if ($result !== false) {
+				// Mark migration as completed
+				add_option('tooltipy_excluded_posts_migrated', true);
+			}
+		} else {
+			// No data to migrate, mark as completed anyway
+			add_option('tooltipy_excluded_posts_migrated', true);
+		}
+	}
+});
+
+/**
+ * Show admin notice after migration
+ */
+add_action('admin_notices', function() {
+	$migration_notice = get_option('tooltipy_migration_notice');
+	
+	if ($migration_notice && is_array($migration_notice)) {
+		$migrated = $migration_notice['migrated'];
+		$failed = $migration_notice['failed'];
+		
+		echo '<div class="notice notice-success is-dismissible">';
+		echo '<p><strong>Keywords Tooltip Generator:</strong> Successfully migrated ' . $migrated . ' excluded posts to individual post settings.';
+		if ($failed > 0) {
+			echo ' (' . $failed . ' posts could not be migrated because they no longer exist.)';
+		}
+		echo '</p>';
+		echo '</div>';
+		
+		// Remove the notice after showing it once
+		delete_option('tooltipy_migration_notice');
+	}
+});
+
+/**
+ * Manual migration trigger for admin users
+ * Can be called via: tooltipy_manual_migrate_excluded_posts()
+ */
+function tooltipy_manual_migrate_excluded_posts() {
+	// Only allow admin users to run this
+	if (!current_user_can('manage_options')) {
+		return false;
+	}
+	
+	// Reset migration flag to allow re-running
+	delete_option('tooltipy_excluded_posts_migrated');
+	
+	// Run migration
+	$result = tooltipy_migrate_excluded_posts_to_postmeta();
+	
+	if ($result !== false) {
+		// Mark migration as completed
+		add_option('tooltipy_excluded_posts_migrated', true);
+		return $result;
+	}
+	
+	return false;
+}

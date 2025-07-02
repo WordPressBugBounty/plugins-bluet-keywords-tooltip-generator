@@ -1,9 +1,9 @@
 === Tooltipy (tooltips for WP) ===
 Contributors: lebleut
 Tags: tooltip, highlight, keyword, glossary, link
-Requires at least: 3.9
+Requires at least: 6.0
 Tested up to: 6.7.2
-Stable tag: 5.5.5
+Stable tag: 5.5.6
 License: GPLv2 or later
 
 Tooltipy allows you to highlight the keywords in your content in order to show a responsive description tooltips
@@ -110,6 +110,9 @@ The plugin is available in these languages :
 11. Glossary settings page
 
 == Changelog ==
+
+= 5.5.6 =
+Excluded posts issue fixed
 
 = 5.5.4 =
 jQuery performence issue related to Divi themes fixed thanks to [Jürgen](https://wordpress.org/support/topic/tooltipy-not-more-running)

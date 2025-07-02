@@ -545,12 +545,50 @@ function bluet_kw_render_settings_page() {
 
 
 function bluet_kw_fetch_excluded_posts(){
-//returns the list of the posts being excluded from keywords matching
-
+	//returns the list of the posts being excluded from keywords matching
 	
-	//get list if excluded posts
-	$tooltipy_excluded_posts = get_option("tooltipy_excluded_posts_from_matching");
-
+	// Get supported post types (same logic as the rest of the plugin)
+	$post_types_to_query = array('post', 'page'); // Default post types
 	
-	return $tooltipy_excluded_posts;
+	// Add custom post types if advanced functionality is available
+	if (function_exists('bluet_get_post_types_to_filter')) {
+		$custom_post_types = bluet_get_post_types_to_filter();
+		if (!empty($custom_post_types)) {
+			$post_types_to_query = array_merge($post_types_to_query, $custom_post_types);
+		}
+	}
+	
+	// Remove duplicates and ensure we have valid post types
+	$post_types_to_query = array_unique($post_types_to_query);
+	
+	//Query posts that have the exclusion meta set to 'on'
+	$excluded_posts_query = new WP_Query(array(
+		'post_type' => $post_types_to_query,
+		'post_status' => 'publish',
+		'posts_per_page' => -1, // Get all excluded posts
+		'meta_query' => array(
+			array(
+				'key' => 'bluet_exclude_post_from_matching',
+				'value' => 'on',
+				'compare' => '='
+			)
+		),
+		'fields' => 'ids' // Only get post IDs for efficiency
+	));
+	
+	$excluded_posts = array();
+	
+	if ($excluded_posts_query->have_posts()) {
+		foreach ($excluded_posts_query->posts as $post_id) {
+			$excluded_posts[] = array(
+				'id' => $post_id,
+				'title' => get_the_title($post_id),
+				'slug' => get_post($post_id)->post_name
+			);
+		}
+	}
+	
+	wp_reset_postdata();
+	
+	return $excluded_posts;
 }

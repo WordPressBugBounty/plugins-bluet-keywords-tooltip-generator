@@ -235,70 +235,11 @@ add_action('save_post',function($post_id){
 			$exclude_me = !empty( $_POST['bluet_exclude_post_from_matching_name'] ) ? sanitize_text_field( $_POST['bluet_exclude_post_from_matching_name'] ) : '';
 			$exclude_keywords_string = sanitize_text_field( $_POST['bluet_exclude_keywords_from_matching_name'] );
 
-			// save exclude post from matching
+			// save exclude post from matching (now using postmeta only)
 			update_post_meta($post_id,'bluet_exclude_post_from_matching',$exclude_me);
 			
-			//get list if excluded posts
-			$tooltipy_excluded_posts = get_option("tooltipy_excluded_posts_from_matching");
-
-			// if the post is excluded
-			if( $exclude_me == "on"){
-
-				// insert excluded post into an option instead of a post meta
-				// in order to get them much faster using the "bluet_kw_fetch_excluded_posts()" function
-				// this will prevent it from seeking all the posts and pages meta boxes each time
-				
-				// this post info
-				$tooltipy_this_post_info = array(
-					'id' 	=> 	$post_id,
-					'title' => 	sanitize_title( $_POST['post_title'] ),
-					'slug' 	=> 	sanitize_text_field( $_POST['post_name'] ),
-				);
-				if( is_array($tooltipy_excluded_posts) ){
-					// since option is there
-					// add this post inf as excluded "update_option()" if not
-					
-					foreach ($tooltipy_excluded_posts as $key => $excluded_post) {
-						// look if it is allready there
-						if( $excluded_post['id'] == $post_id ){
-							// remove it from array so to puch it with new data later with " array_push() "
-							unset($tooltipy_excluded_posts[$key]);
-						}
-					}
-
-					array_push( $tooltipy_excluded_posts, $tooltipy_this_post_info );
-
-					update_option( "tooltipy_excluded_posts_from_matching" , $tooltipy_excluded_posts );
-
-				}else{
-					// option is not yet created
-					//	add it ( create it ) "add_option()"
-					//	add this post inf as excluded
-					$tooltipy_excluded_posts= 	array(
-													$tooltipy_this_post_info
-												);
-					add_option( "tooltipy_excluded_posts_from_matching" , $tooltipy_excluded_posts );
-				}
-			}else{
-				if( is_array($tooltipy_excluded_posts) ){
-					// if not excluded remove it from the "tooltipy_excluded_posts_from_matching" option
-					foreach ($tooltipy_excluded_posts as $key => $excluded_post) {
-						// look if it is allready there
-						if( $excluded_post['id'] == $post_id ){
-							// remove it from array
-							unset($tooltipy_excluded_posts[$key]);
-						}
-					}
-
-					update_option( "tooltipy_excluded_posts_from_matching" , $tooltipy_excluded_posts );
-				}else{
-					$tooltipy_excluded_posts= array();
-					add_option( "tooltipy_excluded_posts_from_matching" , $tooltipy_excluded_posts );
-				}
-			}
-
-			// 
-			$updated = update_post_meta($post_id,'bluet_exclude_keywords_from_matching',$exclude_keywords_string);
+			// save excluded keywords
+			update_post_meta($post_id,'bluet_exclude_keywords_from_matching',$exclude_keywords_string);
 			
 			$matchable_keywords = !empty( $_POST['matchable_keywords'] ) ? sanitize_text_field( $_POST['matchable_keywords'] ) : '';
 			$arr_match=array();

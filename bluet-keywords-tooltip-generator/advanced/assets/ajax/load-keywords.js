@@ -27,7 +27,7 @@ jQuery(document).on("keywordsFetched",function() {
 jQuery(document).on("keywordsLoaded",function() {
 	jQuery('#loading_tooltip').remove();
 
-	if(currentHoveredKeyword){
+	if(currentHoveredKeyword && currentHoveredKeyword?.trigger && typeof currentHoveredKeyword.trigger === 'function' ){
 		// To show the current tooltip if a kayword is hevered
 		currentHoveredKeyword.trigger('mouseover');
 		currentHoveredKeyword = 'done';

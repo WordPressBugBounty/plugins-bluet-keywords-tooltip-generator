@@ -3,7 +3,7 @@
 Plugin Name: Tooltipy
 Description: This plugin allows you automatically create tooltip boxes for your technical keywords in order to explain them for your site visitors making surfing more comfortable.
 Author: Jamel Zarga
-Version: 5.5.6
+Version: 5.5.7
 Author URI: https://www.wpjam.co
 */
 
@@ -253,7 +253,7 @@ function tltpy_place_tooltips(){
 		<script type="text/javascript">
 			jQuery(function($) {
 				/*test*/
-				function tltpy_fetch_kws(){
+				window.tltpy_fetch_kws = function(){
 					window.kttg_tab=[
 					<?php foreach($my_keywords_terms as $my_kw){ 
 
@@ -711,9 +711,11 @@ function tltpy_place_tooltips(){
 						continue;
 					}
 				?>
-					$("body").on('<?php echo($custom_event); ?>',function(){
+					document.addEventListener('<?php echo($custom_event); ?>',function(){
 						tltpy_fetch_kws();
+						console.log("<?php echo($custom_event); ?> fired & keywords fetched");
 					});
+
 				<?php 
 				}
 				?>
@@ -801,7 +803,7 @@ function bluet_kw_load_scripts_front() {
 	}
 
     $frontend_style_file = apply_filters('tooltipy_stylesheet_url', plugins_url('assets/style.css',__FILE__) );
-	wp_enqueue_style( 'tooltipy-default-style', $frontend_style_file, array(), false);
+	wp_enqueue_style( 'tooltipy-default-style', $frontend_style_file, array(), TOOLTIPY_VERSION);
 
 	//load jQuery once to avoid conflict
 	wp_enqueue_script('kttg-tooltips-functions-script', plugins_url('assets/kttg-tooltip-functions.js',__FILE__), array('jquery'), TOOLTIPY_VERSION, true );

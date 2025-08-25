@@ -65,7 +65,7 @@ function tltpy_glossary_kws_per_page_display(){
 	$options = get_option( 'bluet_glossary_options', [] );
 	$kws_per_page = isset($options['kttg_kws_per_page']) ? $options['kttg_kws_per_page'] : '';
 	?>
-	<input id="bt_kw_glossary_kpp" type="number" min="1" max="900" name="bluet_glossary_options[kttg_kws_per_page]" value="<?php echo $kws_per_page; ?>" placeholder="<?php _e('ALL','tooltipy-lang');?>"> Keywords Per Page (leave blank for unlimited keywords per page)<?php
+	<input id="bt_kw_glossary_kpp" type="number" min="1" max="900" name="bluet_glossary_options[kttg_kws_per_page]" value="<?php echo esc_attr($kws_per_page); ?>" placeholder="<?php _e('ALL','tooltipy-lang');?>"> Keywords Per Page (leave blank for unlimited keywords per page)<?php
 }
 function tltpy_glossary_text_display(){
 	$options = get_option( 'bluet_glossary_options', [] );
@@ -76,11 +76,11 @@ function tltpy_glossary_text_display(){
 	$value_glossary_text_previous 	= isset( $options['kttg_glossary_text'] ) && array_key_exists('kttg_glossary_text_previous', $options['kttg_glossary_text']) ? $options['kttg_glossary_text']['kttg_glossary_text_previous'] : "";
 	$value_glossary_text_next 	= isset( $options['kttg_glossary_text'] ) && array_key_exists('kttg_glossary_text_next', $options['kttg_glossary_text']) ? $options['kttg_glossary_text']['kttg_glossary_text_next'] : "";
 
-	_e('<b>ALL</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_all]" value="<?php echo $value_glossary_text_all; ?>" placeholder="<?php _e('ALL','tooltipy-lang');?>"><br>
+	_e('<b>ALL</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_all]" value="<?php echo esc_attr($value_glossary_text_all); ?>" placeholder="<?php _e('ALL','tooltipy-lang');?>"><br>
 	<?php
-	_e('<b>Previous</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_previous]" value="<?php echo $value_glossary_text_previous; ?>" placeholder="<?php _e('Previous','tooltipy-lang');?>"><br>
+	_e('<b>Previous</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_previous]" value="<?php echo esc_attr($value_glossary_text_previous); ?>" placeholder="<?php _e('Previous','tooltipy-lang');?>"><br>
 	<?php
-	_e('<b>Next</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_next]" value="<?php echo $value_glossary_text_next; ?>" placeholder="<?php _e('Next','tooltipy-lang');?>"><br>
+	_e('<b>Next</b> label','tooltipy-lang'); ?> : <input  type="text" name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_next]" value="<?php echo esc_attr($value_glossary_text_next); ?>" placeholder="<?php _e('Next','tooltipy-lang');?>"><br>
 	<?php
 
 	_e('<b>Select a family</b> label','tooltipy-lang');
@@ -88,7 +88,7 @@ function tltpy_glossary_text_display(){
 	<input  
 		type="text"
 		name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_select_a_family]"
-		value="<?php echo $label_select_a_family; ?>"
+		value="<?php echo esc_attr($label_select_a_family); ?>"
 		placeholder="<?php _e('Select a family','tooltipy-lang');?>"
 	><br>
 	<?php
@@ -97,7 +97,7 @@ function tltpy_glossary_text_display(){
 	<input  
 		type="text"
 		name="bluet_glossary_options[kttg_glossary_text][kttg_glossary_text_select_all_families]"
-		value="<?php echo $label_select_all_families; ?>"
+		value="<?php echo esc_attr($label_select_all_families); ?>"
 		placeholder="<?php _e('All families','tooltipy-lang');?>"
 	><br>
 	<?php
@@ -126,12 +126,12 @@ function bt_kw_show_glossary_link_display(){
     
     <div>
             <label for="bt_kw_glossary_page_link"><?php _e('Glossary page link','tooltipy-lang'); ?></label>
-            <input  type="text" id="bt_kw_glossary_page_link" name="bluet_glossary_options[kttg_link_glossary_page_link]" value="<?php echo $link_glossary_page_link; ?>" placeholder="http://...">
+            <input  type="text" id="bt_kw_glossary_page_link" name="bluet_glossary_options[kttg_link_glossary_page_link]" value="<?php echo esc_attr($link_glossary_page_link); ?>" placeholder="http://...">
     </div>
     
     <div>
         <label for="bt_kw_glossary_link_label_id"><?php _e('Glossary link label','tooltipy-lang'); ?></label>        
-        <input  type="text" id="bt_kw_glossary_link_label_id" name="bluet_glossary_options[kttg_link_glossary_label]" value="<?php echo $link_glossary_label; ?>" placeholder="<?php _e('View glossary','tooltipy-lang');?>">
+        <input  type="text" id="bt_kw_glossary_link_label_id" name="bluet_glossary_options[kttg_link_glossary_label]" value="<?php echo esc_attr($link_glossary_label); ?>" placeholder="<?php _e('View glossary','tooltipy-lang');?>">
  
     </div>
  

@@ -254,7 +254,7 @@ function bt_kw_tooltip_width_display(){
 	$options = get_option( 'bluet_kw_style', [] );
 	$tooltip_width = isset($options['bt_kw_tooltip_width']) ? $options['bt_kw_tooltip_width'] : '';
 	?>
-	<input id="bt_kw_tooltip_width_id" type="number" min="1" max="5000" name="bluet_kw_style[bt_kw_tooltip_width]" value="<?php echo $tooltip_width; ?>"> px<?php
+			<input id="bt_kw_tooltip_width_id" type="number" min="1" max="5000" name="bluet_kw_style[bt_kw_tooltip_width]" value="<?php echo esc_attr($tooltip_width); ?>"> px<?php
 }
 
 function bt_kw_alt_img_display(){
@@ -269,11 +269,11 @@ function bt_kw_add_css_classes_display(){
 	$options = get_option( 'bluet_kw_style' );
 	?>
 	<p><label>
-		<input id="bt_kw_keyword_classes_id" type="text" name="bluet_kw_style[bt_kw_add_css_classes][keyword]" value="<?php if(!empty($options['bt_kw_add_css_classes']['keyword'])) echo $options['bt_kw_add_css_classes']['keyword']; ?>"> <?php _e("To inline keywords",'tooltipy-lang'); ?>
+		<input id="bt_kw_keyword_classes_id" type="text" name="bluet_kw_style[bt_kw_add_css_classes][keyword]" value="<?php if(!empty($options['bt_kw_add_css_classes']['keyword'])) echo esc_attr($options['bt_kw_add_css_classes']['keyword']); ?>"> <?php _e("To inline keywords",'tooltipy-lang'); ?>
 	</label></p>
 
 	<p><label>
-		<input id="bt_kw_popup_classes_id" type="text" name="bluet_kw_style[bt_kw_add_css_classes][popup]" value="<?php if(!empty($options['bt_kw_add_css_classes']['popup'])) echo $options['bt_kw_add_css_classes']['popup']; ?>"> <?php _e("To tooltips",'tooltipy-lang'); ?>
+		<input id="bt_kw_popup_classes_id" type="text" name="bluet_kw_style[bt_kw_add_css_classes][popup]" value="<?php if(!empty($options['bt_kw_add_css_classes']['popup'])) echo esc_attr($options['bt_kw_add_css_classes']['popup']); ?>"> <?php _e("To tooltips",'tooltipy-lang'); ?>
 	</label></p>
 
 	<p><?php echo(" <i>".__("Separated with spaces, please don't use special characters",'tooltipy-lang')."</i>"); ?></p>
@@ -285,7 +285,7 @@ function bt_kw_desc_font_size_display(){
 //font size field render function	
 	$options = get_option( 'bluet_kw_style' );
 	?>
-			<input id="bt_kw_desc_font_size_id" type="number" min="1" max="50" name="bluet_kw_style[bt_kw_desc_font_size]" value="<?php echo $options['bt_kw_desc_font_size']; ?>"> px
+			<input id="bt_kw_desc_font_size_id" type="number" min="1" max="50" name="bluet_kw_style[bt_kw_desc_font_size]" value="<?php echo esc_attr($options['bt_kw_desc_font_size']); ?>"> px
 	<?php
 }
 function bt_kw_desc_colour_display(){
@@ -293,9 +293,9 @@ function bt_kw_desc_colour_display(){
 	$options = get_option( 'bluet_kw_style' );
 	?>
 		<?php _e('Description Background Colour','tooltipy-lang'); ?> : <br>
-			<input id="aaa" type="text" class="color-field" name="bluet_kw_style[bt_kw_desc_bg_color]" value="<?php echo $options['bt_kw_desc_bg_color']; ?>">
+			<input id="aaa" type="text" class="color-field" name="bluet_kw_style[bt_kw_desc_bg_color]" value="<?php echo esc_attr($options['bt_kw_desc_bg_color']); ?>">
 		<br><?php _e('Description font Colour','tooltipy-lang'); ?> :<br>
-			<input type="text" class="color-field" name="bluet_kw_style[bt_kw_desc_color]" value="<?php echo $options['bt_kw_desc_color']; ?>">
+			<input type="text" class="color-field" name="bluet_kw_style[bt_kw_desc_color]" value="<?php echo esc_attr($options['bt_kw_desc_color']); ?>">
 	<?php
 }
 
@@ -319,8 +319,8 @@ function bt_kw_tt_colour_display(){
 	//colour field render function	
 	$options = get_option( 'bluet_kw_style' );
 	?>
-		<?php _e('Background Colour','tooltipy-lang'); ?> : <br><p><input id="bluet_kw_no_background" type="checkbox" name="bluet_kw_style[bt_kw_on_background]" <?php if(!empty($options['bt_kw_on_background']) and $options['bt_kw_on_background']) echo 'checked'; ?>/><label for="bluet_kw_no_background" style="border-bottom: black 1px dotted;"><?php _e('No background (Dotted style)','tooltipy-lang'); ?></label></p><div id="bluet_kw_bg_hide"><input  type="text" class="color-field" name="bluet_kw_style[bt_kw_tt_bg_color]" value="<?php echo $options['bt_kw_tt_bg_color']; ?>"></div>
-		<br><?php _e('Font Colour','tooltipy-lang'); ?> : <br><input  type="text" class="color-field" name="bluet_kw_style[bt_kw_tt_color]" value="<?php echo $options['bt_kw_tt_color']; ?>">
+		<?php _e('Background Colour','tooltipy-lang'); ?> : <br><p><input id="bluet_kw_no_background" type="checkbox" name="bluet_kw_style[bt_kw_on_background]" <?php if(!empty($options['bt_kw_on_background']) and $options['bt_kw_on_background']) echo 'checked'; ?>/><label for="bluet_kw_no_background" style="border-bottom: black 1px dotted;"><?php _e('No background (Dotted style)','tooltipy-lang'); ?></label></p><div id="bluet_kw_bg_hide"><input  type="text" class="color-field" name="bluet_kw_style[bt_kw_tt_bg_color]" value="<?php echo esc_attr($options['bt_kw_tt_bg_color']); ?>"></div>
+		<br><?php _e('Font Colour','tooltipy-lang'); ?> : <br><input  type="text" class="color-field" name="bluet_kw_style[bt_kw_tt_color]" value="<?php echo esc_attr($options['bt_kw_tt_color']); ?>">
 
 	<?php
 }

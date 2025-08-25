@@ -157,10 +157,10 @@ function tltpy_glossary(){
 												SELECT      ID
 												FROM        $wpdb->posts
 												WHERE       SUBSTR($wpdb->posts.post_title,1,1) = %s
-													AND $wpdb->posts.post_type='".$tooltipy_post_type_name."'
+													AND $wpdb->posts.post_type = %s
 													AND $wpdb->posts.post_status = 'publish'
 												ORDER BY    $wpdb->posts.post_title"
-											,$chosen_letter)); 
+											,$chosen_letter, $tooltipy_post_type_name)); 
    }
 
    // set the "paged" parameter (use 'page' if the query is on a static front page)

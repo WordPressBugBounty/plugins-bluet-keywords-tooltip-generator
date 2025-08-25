@@ -1,26 +1,14 @@
 <?php
-add_action('wp_enqueue_scripts', 'tltpy_load_keywords_js');
-
-function tltpy_load_keywords_js() {
-	wp_enqueue_script(
-		'tltpy_load_keywords_script',
-		plugins_url('assets/ajax/load-keywords.js',__FILE__),
-		array('jquery'),
-		TOOLTIPY_VERSION,
-		true
-	);
-
-	// pass Ajax Url to script.js
-	wp_localize_script('tltpy_load_keywords_script', 'tltpy_js_object', [
-		'tltpy_ajax_load' => admin_url( 'admin-ajax.php' )
-	] );
-}
-
 ////
 add_action( 'wp_ajax_tltpy_load_keywords', 'tltpy_load_keywords' );
 add_action( 'wp_ajax_nopriv_tltpy_load_keywords', 'tltpy_load_keywords' );
 
 function tltpy_load_keywords() {
+	// Verify nonce for security
+	if (!wp_verify_nonce($_POST['nonce'] ?? '', 'tltpy_load_keywords_nonce')) {
+		wp_die('Security check failed');
+	}
+	
 	global $tooltip_post_types, $tooltipy_cat_name;
 
 	//init added classes
@@ -109,7 +97,7 @@ function tltpy_load_keywords() {
 				}else{
 					?>				
 					<div class="bluet_img_in_tooltip">
-						<iframe src="https://www.youtube.com/embed/<?php echo($tooltipy_youtube); ?>?rel=0&showinfo=0" frameborder="0" allowfullscreen width="100%">
+						<iframe src="https://www.youtube.com/embed/<?php echo esc_attr($tooltipy_youtube); ?>?rel=0&showinfo=0" frameborder="0" allowfullscreen width="100%">
 						</iframe>						
 					</div>
 					<?php
@@ -129,10 +117,10 @@ function tltpy_load_keywords() {
                         if(!empty($glossary_options['bluet_kttg_show_glossary_link']) and $glossary_options['bluet_kttg_show_glossary_link']=='on'){
                         ?>
                             <p class="bluet_block_glossary_link">
-                                <a href="<?php echo($glossary_options['kttg_link_glossary_page_link']); ?>">
+                                <a href="<?php echo esc_url($glossary_options['kttg_link_glossary_page_link']); ?>">
                                     <?php
                                     if(strlen($glossary_options['kttg_link_glossary_label'])){
-                                        echo($glossary_options['kttg_link_glossary_label']);
+                                        echo esc_html($glossary_options['kttg_link_glossary_label']);
                                     }else{
                                         echo("View glossary");
                                     }
@@ -170,3 +158,57 @@ function tltpy_load_keywords() {
 
 	die();
 }
+
+add_action('wp_footer', function(){
+	?>
+	<script>
+	var currentHoveredKeyword = false;
+
+	//once keywords fetched (highlihted)
+	jQuery(document).on("keywordsFetched",function() {
+		var keyw=[];
+		jQuery("body .bluet_tooltip").each(function(){
+			keyw.push(jQuery(this).data('tooltip'));
+		});
+		
+		jQuery.post(
+			'<?php echo admin_url('admin-ajax.php'); ?>',
+			{
+				'action': 'tltpy_load_keywords',
+				'keyword_ids': keyw,
+				'nonce': '<?php echo wp_create_nonce('tltpy_load_keywords_nonce'); ?>'
+			},
+			function(response){
+				jQuery('#tooltip_blocks_to_show .bluet_block_to_show').remove(':not(#loading_tooltip)');
+
+			
+				jQuery('#tooltip_blocks_to_show').append(response);
+				
+				jQuery.event.trigger("keywordsLoaded");
+			}
+		);
+	});
+
+	jQuery(document).on("keywordsLoaded",function() {
+		jQuery('#loading_tooltip').remove();
+
+		if(currentHoveredKeyword && currentHoveredKeyword?.trigger && typeof currentHoveredKeyword.trigger === 'function' ){
+			// To show the current tooltip if a kayword is hevered
+			currentHoveredKeyword.trigger('mouseover');
+			currentHoveredKeyword = 'done';
+		}
+
+		<?php if ( wp_script_is( 'wp-mediaelement', 'enqueued' ) ) { ?>
+			//for [audio] and [video] shortcodes to generate audio after keywords load
+			jQuery('.tooltipy-pop .wp-audio-shortcode[style*="visibility:hidden"], .tooltipy-pop .wp-video-shortcode[style*="visibility:hidden"]').mediaelementplayer();
+			jQuery('.tooltipy-pop .wp-audio-shortcode[style*="visibility: hidden"], .tooltipy-pop .wp-video-shortcode[style*="visibility: hidden"]').mediaelementplayer();
+		<?php } ?>	
+		
+		//to prevent empty div on the top
+		/*if(jQuery("#tooltip_blocks_to_show").find(".bluet_block_to_show").length==0){
+			jQuery("#tooltip_blocks_to_show").remove();
+		}*/
+	});
+	</script>
+	<?php
+});

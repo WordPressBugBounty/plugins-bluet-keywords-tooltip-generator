@@ -3,7 +3,7 @@ Contributors: lebleut
 Tags: tooltip, highlight, keyword, glossary, link
 Requires at least: 6.0
 Tested up to: 6.7.2
-Stable tag: 5.5.6
+Stable tag: 5.5.9
 License: GPLv2 or later
 
 Tooltipy allows you to highlight the keywords in your content in order to show a responsive description tooltips
@@ -110,6 +110,12 @@ The plugin is available in these languages :
 11. Glossary settings page
 
 == Changelog ==
+
+= 5.5.8 =
+Security improvements
+mediaelementjs issue fixed
+fix cutom events listener
+shortcode issue fixed
 
 = 5.5.6 =
 Excluded posts issue fixed

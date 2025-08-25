@@ -51,7 +51,7 @@ class bluet_keyword_widget extends wp_widget{
 		extract($args);
 		echo($before_widget);
 			echo($before_title);
-				echo $instance['title'];
+				echo esc_html($instance['title']);
 			echo($after_title);
 			echo('<ul>');
 			//widget content process here

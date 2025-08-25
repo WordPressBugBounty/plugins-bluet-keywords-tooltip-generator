@@ -272,7 +272,7 @@ function tltpy_custom_events_display(){
     }
  
     ?>
-		<input type="text" id="kttg_custom_events_id" style="min-width:300px;" placeholder="<?php _e('Events names saparated with \',\'','tooltipy-lang'); ?>" name="bluet_kw_advanced[kttg_custom_events]" value="<?php echo($kttg_custom_events); ?>">
+		<input type="text" id="kttg_custom_events_id" style="min-width:300px;" placeholder="<?php _e('Events names saparated with \',\'','tooltipy-lang'); ?>" name="bluet_kw_advanced[kttg_custom_events]" value="<?php echo esc_attr($kttg_custom_events); ?>">
      <?php
 }
 function bluet_kw_cover_tags_display(){
@@ -290,7 +290,7 @@ function bluet_kw_cover_tags_display(){
 			</div>
 			
 			<input class="easy_tags-field" type="text" style="max-width:250px;" id="bluet_cover_tags_id" placeholder="<?php _e('HTML tag ...','tooltipy-lang'); ?>"> <!-- field -->
-				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_cover_tags]" id="cover_tags_send" value="<?php echo($kttg_cover_tags);?>" > <!-- hidden text to send -->
+				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_cover_tags]" id="cover_tags_send" value="<?php echo esc_attr($kttg_cover_tags);?>" > <!-- hidden text to send -->
 		</div>
 		<input class="easy_tags-add button tagadd" type="button" value="<?php _e('Add'); ?>" id="cover_tag_add" > <!-- add button -->
 	</div>
@@ -315,7 +315,7 @@ function bluet_kw_cover_areas_display(){
 			</div>
 			
 			<input class="easy_tags-field" type="text" style="max-width:250px;" id="bluet_cover_areas_id" placeholder="<?php _e('class ...','tooltipy-lang'); ?>"> <!-- field -->
-				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_cover_areas]" id="cover_areas_send" value="<?php echo($kttg_cover_areas);?>" > <!-- hidden text to send -->
+				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_cover_areas]" id="cover_areas_send" value="<?php echo esc_attr($kttg_cover_areas);?>" > <!-- hidden text to send -->
 		</div>
 		<input class="easy_tags-add button tagadd" type="button" value="<?php _e('Add'); ?>" id="cover_class_add" > <!-- add button -->
 	</div>
@@ -355,7 +355,7 @@ function bluet_kw_exclude_areas_display(){
 			</div>
 			
 			<input class="easy_tags-field" type="text" style="max-width:250px;" id="bluet_exclude_areas_id" placeholder="<?php _e('class ...','tooltipy-lang'); ?>" >
-				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_exclude_areas]" id="exclude_areas_send" value="<?php echo($kttg_exclude_areas);?>" >
+				<input class="easy_tags-to_send" type="hidden" name="bluet_kw_advanced[kttg_exclude_areas]" id="exclude_areas_send" value="<?php echo esc_attr($kttg_exclude_areas);?>" >
 		</div>
 		<input class="easy_tags-add button tagadd" type="button" value="<?php _e('Add'); ?>" id="exclude_class_add" >
 	</div>

@@ -164,7 +164,7 @@ function bluet_keywords_related_render(){
 				</div>
 				
 				<input class="easy_tags-field" type="text" style="max-width:250px;" id="bluet_cover_areas_id" placeholder="<?php _e('keyword...','tooltipy-lang'); ?>"> <!-- field -->
-					<input class="easy_tags-to_send" type="hidden" name="bluet_exclude_keywords_from_matching_name" id="exclude-keywords-field" value="<?php echo $exclude_keywords_string; ?>" > <!-- hidden text to send -->
+					<input class="easy_tags-to_send" type="hidden" name="bluet_exclude_keywords_from_matching_name" id="exclude-keywords-field" value="<?php echo esc_attr($exclude_keywords_string); ?>" > <!-- hidden text to send -->
 			</div>
 
 			<input class="easy_tags-add button tagadd" type="button" value="<?php _e('Add'); ?>" id="cover_class_add" > <!-- add button -->

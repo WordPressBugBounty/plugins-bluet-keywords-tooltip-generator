@@ -37,7 +37,7 @@ function bluetImgAltTooltip(imgElem){
 	  var rectLeft=imgElem.offsetLeft;
 	  var wd=imgElem.offsetWidth;
 
-	  tooltipElem.textContent = imgElem.alt;
+	  tooltipElem.innerHTML =imgElem.alt;
 		
 	  var newLeft=(rectLeft+(wd/2)-(tooltipElem.offsetWidth)/2);
 

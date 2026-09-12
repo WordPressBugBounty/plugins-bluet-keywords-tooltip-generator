@@ -44,17 +44,3 @@ background-color: indianred;
 a.nav-tab{
 cursor: pointer !important;
 }
-#kttg_exclude_headings_zone{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-#kttg_exclude_headings_zone label{
-  height: 35px;
-}
-#kttg_exclude_headings_zone label>*{
-  padding-top: 4px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}

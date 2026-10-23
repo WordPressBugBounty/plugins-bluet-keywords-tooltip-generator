@@ -1,5 +1,5 @@
 ﻿=== Tooltipy (tooltips for WP) ===
-Contributors: lebleut
+Contributors: lebleut, salinnovation
 Tags: tooltip, keywords, glossary, highlight, definition
 Requires at least: 6.0
 Tested up to: 6.8
